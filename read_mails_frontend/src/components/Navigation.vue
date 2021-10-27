@@ -1,16 +1,23 @@
 <template>
   <div class="topnav">
-    <a href="#calulator">CALCULATOR</a>
-    <a href="#about">BOOKINGS</a>
-    <a class="leads" href="#contact">LEADS</a>
-    <a href="#news">LOGOUT</a>
-    <a class="active" href="#home">EDIT</a>
+    <a href="#calulator" v-bind:style="{'background-color': navigation == 'CALCULATOR' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'CALCULATOR'">Calculator</a>
+    <a href="#bookings" v-bind:style="{'background-color': navigation == 'BOOKINGS' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'BOOKINGS'">Bookings</a>
+    <a href="#leads" v-bind:style="{'background-color': navigation == 'LEADS' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'LEADS'">Leads</a>
+    <a href="/register" v-bind:style="{'background-color': navigation == 'REGISTER' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'REGISTER'">Register</a>
+    <a href="/login" v-bind:style="{'background-color': navigation == 'LOGIN' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'LOGIN'">Login</a>
+    <a href="#logout" v-bind:style="{'background-color': navigation == 'LOGOUT' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'LOGOUT'">Logout</a>
+    <a href="#edit" v-bind:style="{'background-color': navigation == 'EDIT' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'EDIT'">Edit</a>
   </div>
 </template>
 
 <script>
 export default {
-    name: "Navigation"
+    name: "Navigation",
+    data() {
+      return {
+        navigation: 'LOGIN'
+      }
+    }
 };
 </script>
 
@@ -37,16 +44,5 @@ export default {
 
 }
 
-/* Change the color of links on hover */
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-/* Add a color to the active/current link */
-.topnav a.leads {
-  background-color: #11bfeb;
-  color: white;
-}
 
 </style>
