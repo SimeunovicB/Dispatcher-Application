@@ -15,11 +15,16 @@ class RegisterView(APIView):
         return Response(serializer.data)
 
 
+class RegisterrView(APIView):
+    def post(self, request):
+        print("idemo")
+        return Response("ide gas")
+
+
 class LoginView(APIView):
     def post(self, request):
         email = request.data['email']
         password = request.data['password']
-        print("Email ", email, "\nPassword: ", password);
         user = User.objects.filter(email=email).first()
         if user is None:
             raise AuthenticationFailed('User not found!')
@@ -35,11 +40,10 @@ class LoginView(APIView):
         print("PAYLOAD")
         print(payload)
         token = jwt.encode(payload, "secret", algorithm="HS256")
-        print("TOKEN")
         print(token)
         response = Response({'jwt': token})
         print("RESPONSE DATA ", response.data);
-        response.set_cookie(key='jwt', value=token, httponly=True)
+        response.set_cookie(key='jwt', value=token, httponly=True, secure=True, samesite='None')
         print("KUKIJI ", response.cookies);
         return response
 
@@ -61,3 +65,15 @@ class UserView(APIView):
         serializer = UserSerializer(user)
 
         return Response(serializer.data)
+
+
+class LogoutView(APIView):
+    def post(self, request):
+        print("idemo")
+        response = Response()
+        response.set_cookie(key='jwt', httponly=True, secure=True, samesite='None')
+        response.delete_cookie('jwt')
+        response.data = {
+            'message': 'success'
+        }
+        return response

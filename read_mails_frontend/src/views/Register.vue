@@ -1,37 +1,75 @@
 <template>
   <div class="register">
-    <div class="form">
-      <div class="title">Welcome!</div>
+    <div class="registerForm">
+      <div class="registerTitle">Welcome!</div>
       <!-- <div class="subtitle">Let's create your account!</div> -->
       <div class="input-container ic1">
-        <input id="firstname" class="input" type="text" placeholder=" " />
+        <input
+          id="firstname"
+          class="input"
+          type="text"
+          placeholder=" "
+          v-model="form.firstName"
+        />
         <div class="cut"></div>
         <label for="firstname" class="placeholder">First name</label>
       </div>
       <div class="input-container ic2">
-        <input id="lastname" class="input" type="text" placeholder=" " />
+        <input
+          id="lastname"
+          class="input"
+          type="text"
+          placeholder=" "
+          v-model="form.lastName"
+        />
         <div class="cut"></div>
         <label for="lastname" class="placeholder">Last name</label>
       </div>
       <div class="input-container ic2">
-        <input id="email" class="input" type="text" placeholder=" " />
+        <input
+          id="email"
+          class="input"
+          type="text"
+          placeholder=" "
+          v-model="form.email"
+        />
         <div class="cut cut-short"></div>
         <label for="email" class="placeholder">Email</label>
       </div>
       <div class="input-container ic2">
-        <input id="phoneNumber" class="input" type="text" placeholder=" " />
+        <input
+          id="phoneNumber"
+          class="input"
+          type="text"
+          placeholder=" "
+          v-model="form.phoneNumber"
+        />
         <div class="cut cut-short"></div>
         <label for="phoneNumber" class="placeholder">Phone number</label>
       </div>
       <div class="input-container ic2">
-        <input id="password" class="input" type="password" placeholder=" " />
+        <input
+          id="password"
+          class="input"
+          type="password"
+          placeholder=" "
+          v-model="form.password"
+        />
         <div class="cut cut-short"></div>
         <label for="password" class="placeholder">Password</label>
       </div>
       <div class="input-container ic2">
-        <input id="confirmPassword" class="input" type="password" placeholder=" " />
+        <input
+          id="confirmPassword"
+          class="input"
+          type="password"
+          placeholder=" "
+          v-model="form.confirmPassword"
+        />
         <div class="cut cut-short"></div>
-        <label for="confirmPassword" class="placeholder">Confirm password</label>
+        <label for="confirmPassword" class="placeholder"
+          >Confirm password</label
+        >
       </div>
       <button type="text" class="submit" @click="register()">Register</button>
     </div>
@@ -39,14 +77,46 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "Register",
+  data() {
+    return {
+      form: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        password: "",
+        confirmPassword: "",
+      },
+    };
+  },
   methods: {
-      register() {
-          console.log("registracija")
-          
+    register() {
+      console.log("registracija");
+      if (this.form.password === this.form.confirmPassword) {
+        axios({
+          method: "post",
+          url: "api/register",
+          data: {
+            firstName: this.form.firstName,
+            lastName: this.form.lastName,
+            email: this.form.email,
+            phoneNumber: this.form.phoneNumber,
+            password: this.form.password,
+          },
+        }).then((response) => {
+          console.log("Register response")  
+          console.log(response);
+          console.log(response.data);
+        });
+      } else {
+        console.log("sifre se ne poklapaju!");
+        throw "Passwords not matching!";
       }
-  }
+    },
+  },
 };
 </script>
 
@@ -64,11 +134,11 @@ export default {
   height: 100vh;
   display: flex;
   margin: 30px;
-/* align-items: center; */
+  /* align-items: center; */
   justify-content: center;
 }
 
-.form {
+.registerForm {
   background-color: rgb(8, 8, 41);
   /* border-radius: 20px; */
   box-sizing: border-box;
@@ -77,14 +147,14 @@ export default {
   width: 380px;
 }
 
-.title {
+.registerTitle {
   color: #eee;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 30px;
   font-weight: 600;
 }
 
-.subtitle {
+.registerSubtitle {
   color: #eee;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -112,7 +182,7 @@ export default {
   border: 0;
   box-sizing: border-box;
   color: #eee;
-  font-size: 18px;
+  font-size: 16px;
   height: 100%;
   outline: 0;
   padding: 4px 20px 0;

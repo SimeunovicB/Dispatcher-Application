@@ -1,5 +1,6 @@
 <template>
     <div>
+    <div>Logged user: {{this.ide}} </div>
       <div v-for="lead in leads" :key="lead.id">
           <div class='lead'>
               {{lead.name}}
@@ -9,6 +10,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
     name: 'Leads',
     data() {
@@ -26,6 +28,15 @@ export default {
                 }
             ]
         }
+    },
+
+    mounted() {
+        axios({
+            method: 'GET',
+            url: 'api/user'
+        }).then(response => {
+            console.log(response.data)
+        })
     }
 }
 </script>
