@@ -14,10 +14,14 @@
           </div>
           <div class="labele">
             <div v-if="user.is_active">
-              <button class="deactBtn">Deactivate user</button>
+              <button class="deactBtn" @click="changeUserActivity(user.email)">
+                Deactivate user
+              </button>
             </div>
             <div v-else>
-              <button class="actBtn">Activate user</button>
+              <button class="actBtn" @click="changeUserActivity(user.email)">
+                Activate user
+              </button>
             </div>
           </div>
         </div>
@@ -43,6 +47,28 @@ export default {
     var content = await response.json();
     console.log(content);
     this.users = content;
+  },
+  methods: {
+    async changeUserActivity(email) {
+        console.log(email);
+        // const idString = id.toString();
+        // console.log(idString)
+      const response = await fetch("http://127.0.0.1:8000/api/user/activity", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          email
+        }),
+      })
+      let content = await response.json();
+      console.log(content)
+      for(let i in this.users) {
+          if(this.users[i].email == email) {
+              this.users[i].is_active = !this.users[i].is_active;
+          }
+      }
+    },
   },
 };
 </script>

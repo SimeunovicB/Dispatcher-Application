@@ -4,7 +4,7 @@ from app.views import IndexView
 from app.views import ReadMailsView
 from app.views import UnreadMessagesView
 from app.views import AllMessagesView
-from app.authViews import RegisterView, RegisterAdminView, LoginView, UserView, LogoutView, UsersViewSet
+from app.authViews import RegisterView, RegisterAdminView, LoginView, UserView, LogoutView, UsersViewSet, ChangeUserActivityView
 from app.views import TestView
 
 
@@ -20,4 +20,5 @@ urlpatterns = [
     path('test', TestView.as_view()),
     path('register/admin', RegisterAdminView.as_view()),
     path('users', UsersViewSet.as_view()),
+    path('user/activity', ChangeUserActivityView.as_view()),
 ]

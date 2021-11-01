@@ -2,6 +2,7 @@ import datetime
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
+from rest_framework.utils import json
 from rest_framework.views import APIView
 from .models import User
 from .serializers import UserSerializer
@@ -105,4 +106,31 @@ class UsersViewSet(APIView):
         queryset = User.objects.filter(is_superuser=False)
         serializer = UserSerializer(queryset, many=True)
         response = Response(serializer.data, content_type="application/json")
+        return response
+
+
+class ChangeUserActivityView(APIView):
+    def put(self, request):
+        data = json.loads(request.body.decode("utf-8"))
+        email = data['email']
+        print(email)
+        user = User.objects.get(email=email)
+        user.is_active = not user.is_active
+        user.save()
+
+
+        #TODO NAPRAVI PERMISIJE I ONDA VIDI SIGNALE
+        token = request.COOKIES.get('jwt')
+        print("TOKEN ", token);
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated!')
+        user = User.objects.filter(id=payload['id']).first()
+        print("USER OD TOKENA JE ", user)
+
+
+        response = Response("successfuly changed user activity", content_type="application/json")
         return response

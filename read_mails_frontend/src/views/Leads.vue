@@ -219,6 +219,7 @@ export default {
 
 .leads {
   font-family: Avenir, Helvetica, Arial, sans-serif;
+  margin: 30px;
 }
 
 .notes {
