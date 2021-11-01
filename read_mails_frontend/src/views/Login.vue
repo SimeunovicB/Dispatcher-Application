@@ -34,6 +34,8 @@
 </template>
 
 <script>
+
+import axios from 'axios';
 export default {
   name: "Login",
   data() {
@@ -61,31 +63,37 @@ export default {
         console.log(response);
         if(response.status == 200) {
           this.$router.replace("/leads");
-        } else {
+        }
+         else {
           this.errorMessage = "Wrong credentials!"
         }
-        // axios
-        //   .get("api/user", { withCredentials: true })
-        //   .then(function (response) {
-        //     const content = response.data;
-        //     history.replace("/");
-        //     props.setId(content.id);
-        //     props.setName(content.name);
-        //   })
-        //   .catch(function (error) {
-        //     console.log(error);
-        //     if (error.status === 403) {
-        //       setErrorMessage("You have entered wrong credentials!");
-        //     } else {
-        //       setErrorMessage("Error occured while signing in!");
-        //     }
-        //   });
       }).catch(error => {
         console.log(error);
         this.errorMessage = error;
       });
     },
 
+    async test() {
+      // const response = await fetch("http://127.0.0.1:8000/api/test", {
+      //   method: "GET",
+      //   headers: { "Content-Type": "application/json" },
+      //   credentials: "include",
+      // })
+      //   console.log(response);
+      //   console.log(response.data);
+      //   const content = await response.json();
+      // console.log(content);
+      // console.log("IDE CONTENT", content);
+
+      axios({
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+        url: 'api/test'
+      }).then(response =>{
+        console.log(response.data)
+      })
+    }
   },
 };
 </script>

@@ -70,6 +70,7 @@
         </div>
       </div>
     </div>
+    <button @click="test()">Test</button>
   </div>
 </template>
 
@@ -170,6 +171,20 @@ export default {
         this.$store.dispatch("setAuth", true);
       }
     },
+
+    async test() {
+      const response = await fetch("http://127.0.0.1:8000/api/test", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      })
+        console.log(response);
+        console.log(response.data);
+        const content = await response.json();
+      console.log(content);
+      console.log("IDE CONTENT", content);
+
+    }
   },
 };
 </script>

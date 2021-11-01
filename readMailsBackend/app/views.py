@@ -124,7 +124,6 @@ def get_inbox():
                 print("ZADNJI DATUM ", email_message[header])
                 # email_data[header] = ajust_time_zone(email_message[header])
 
-
             #     date = email_message[header].split()
             #     month = switcher.get(date[2], "Invalid month")
             #     email_data['date'] = date[1] + "." + str(month) + "." + date[3] + ". " + date[4] + " " + date[5]
@@ -275,3 +274,33 @@ class AllMessagesView(APIView):
         response = Response(serializer_class.data, content_type="application/json")
         # response = Response("baza", content_type="application/json");
         return response;
+
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+from django.core.exceptions import PermissionDenied
+import jwt
+from .models import User
+from .serializers import UserSerializer
+
+
+class TestView(APIView):
+    def get(self, request):
+        print("USER VIEW")
+        print(request.COOKIES)
+        token = request.COOKIES.get('jwt')
+        print("TOKEN ", token);
+        if not token:
+            raise PermissionDenied('Unauthenticated!')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise PermissionDenied('Unauthenticated!')
+
+        user = User.objects.filter(id=payload['id']).first()
+        serializer = UserSerializer(user)
+        print(user)
+        print("Is superuser ", user.is_superuser)
+        # return Response("idemo", content_type="application/json")
+        return Response(serializer.data)

@@ -109,6 +109,7 @@ export default {
             email: this.form.email,
             phoneNumber: this.form.phoneNumber,
             password: this.form.password,
+            is_active: false
           },
         }).then((response) => {
             if(response.status == 200) {

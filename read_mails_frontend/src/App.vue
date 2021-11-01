@@ -17,6 +17,7 @@
       <router-link v-if="loggedIn" to="" v-bind:style="{'background-color': navigation == 'LOGOUT' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="logout()">Logout</router-link>
       <router-link v-if="!loggedIn" to="/login" v-bind:style="{'background-color': navigation == 'LOGIN' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'LOGIN'">Login</router-link>
       <router-link  v-if="!loggedIn" to="/register" v-bind:style="{'background-color': navigation == 'REGISTER' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'REGISTER'">Register</router-link>
+      <router-link  to="/users" v-bind:style="{'background-color': navigation == 'USERS' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'USERS'">Users</router-link>
     </div>
 
     <div class="card">

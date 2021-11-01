@@ -5,11 +5,23 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import User
 from .serializers import UserSerializer
+from .serializers import AdminSerializer
+from rest_framework import viewsets
 
 
 class RegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.is_active = False
+        serializer.save()
+        return Response(serializer.data)
+
+
+class RegisterAdminView(APIView):
+    def post(self, request):
+        serializer = AdminSerializer(data=request.data)
+        print("treba da jeste superuser")
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -30,6 +42,8 @@ class LoginView(APIView):
             raise AuthenticationFailed('User not found!')
         if not user.check_password(password):
             raise AuthenticationFailed('Incorrect password!')
+        if not user.is_active:
+            raise AuthenticationFailed('User inactive')
         print("USER")
         print(user)
         payload = {
@@ -78,4 +92,17 @@ class LogoutView(APIView):
         response.data = {
             'message': 'success'
         }
+        return response
+
+
+# class UserViewSet(viewsets.ModelViewSet):
+#     # permission_classes = (AllowAny,)
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+
+class UsersViewSet(APIView):
+    def get(self, request):
+        queryset = User.objects.filter(is_superuser=False)
+        serializer = UserSerializer(queryset, many=True)
+        response = Response(serializer.data, content_type="application/json")
         return response
