@@ -33,7 +33,7 @@ class LoginView(APIView):
         print("USER")
         print(user)
         payload = {
-            'id': str(user.id),
+            'id': user.id,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
             'iat': datetime.datetime.utcnow()
         }
@@ -50,6 +50,7 @@ class LoginView(APIView):
 
 class UserView(APIView):
     def get(self, request):
+        print("USER VIEW")
         print(request.COOKIES)
         token = request.COOKIES.get('jwt')
         print("TOKEN ", token);
@@ -63,7 +64,8 @@ class UserView(APIView):
 
         user = User.objects.filter(id=payload['id']).first()
         serializer = UserSerializer(user)
-
+        print(user)
+        # return Response("idemo", content_type="application/json")
         return Response(serializer.data)
 
 

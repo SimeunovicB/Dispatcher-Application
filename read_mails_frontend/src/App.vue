@@ -10,15 +10,18 @@
     </div> -->
 
     <div class="topnav">
-      <router-link to="/login" v-bind:style="{'background-color': navigation == 'CALCULATOR' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'CALCULATOR'">Calculator</router-link>
+      <router-link to="#calculator" v-bind:style="{'background-color': navigation == 'CALCULATOR' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'CALCULATOR'">Calculator</router-link>
       <router-link to="#bookings" v-bind:style="{'background-color': navigation == 'BOOKINGS' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'BOOKINGS'">Bookings</router-link>
       <router-link to="/leads" v-bind:style="{'background-color': navigation == 'LEADS' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'LEADS'">Leads</router-link>
-      <router-link to="/register" v-bind:style="{'background-color': navigation == 'REGISTER' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'REGISTER'">Register</router-link>
-      <router-link to="/login" v-bind:style="{'background-color': navigation == 'LOGIN' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'LOGIN'">Login</router-link>
-      <router-link to="#logout" v-bind:style="{'background-color': navigation == 'LOGOUT' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="logout()">Logout</router-link>
       <router-link to="#edit" v-bind:style="{'background-color': navigation == 'EDIT' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'EDIT'">Edit</router-link>
+      <router-link v-if="loggedIn" to="" v-bind:style="{'background-color': navigation == 'LOGOUT' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="logout()">Logout</router-link>
+      <router-link v-if="!loggedIn" to="/login" v-bind:style="{'background-color': navigation == 'LOGIN' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'LOGIN'">Login</router-link>
+      <router-link  v-if="!loggedIn" to="/register" v-bind:style="{'background-color': navigation == 'REGISTER' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'REGISTER'">Register</router-link>
     </div>
-    <router-view/>
+
+    <div class="card">
+      <router-view/>
+    </div>
   </div>
 </template>
 
@@ -29,23 +32,57 @@
 // import Pagination from './components/Pagination.vue';
 // import Proba from './components/Proba.vue';
 // import Navigation from "./components/Navigation.vue";
+// import {computed} from 'vue';
 export default {
   name: "App",
   components: {}, //Navigation, } // Pagination, LeadsTypeAndSearch, DateAndPriority, Leads },
   data() {
     return {
       navigation: "LOGIN",
+      // auth: computed(this.$store.state.authenticated)
+      auth: false
+      
     }
   },
+  computed: {
+    loggedIn() {
+        return this.$store.state.authenticated;
+      },
+  },
+  mounted() {
+    console.log("ae")
+    // this.auth = this.$store.state.authenticated;
+  },
   methods: {
-    async logout () {
-    console.log("IDE MO MO MO");
-    await fetch("http://127.0.0.1:8000/api/logout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
+  //   async logout () {
+  //   console.log("IDE MO MO MO");
+  //   await fetch("http://127.0.0.1:8000/api/logout", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     credentials: "include",
+  //   });
 
+  // },
+
+  async logout() {
+      await fetch("http://127.0.0.1:8000/api/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      }).then((response) => {
+        console.log(response);
+        if(response.status == 200) {
+          this.$router.replace("/login");
+          this.$store.dispatch('setAuth', false);
+        }
+      }).catch(error => {
+        console.log(error);
+        this.errorMessage = error;
+      });
+    },
+
+  deliAuth() {
+    this.auth = this.$store.state.authenticated;
   }
   }
 };

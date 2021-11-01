@@ -1,12 +1,16 @@
 <template>
   <div class="login">
+    
     <div class="loginForm">
-      <div class="loginTitle">Login</div>
+      <div v-if="errorMessage != ''" class="alert-danger">
+      <div show class="d-flex justify-content-center">{{errorMessage}}</div>
+    </div>
+      <div v-if="errorMessage == ''" class="loginTitle">Login</div>
       <div class="input-container ic1">
         <input
           id="email"
           class="input"
-          type="text"
+          type="email"
           placeholder=" "
           v-model="form.email"
         />
@@ -25,13 +29,11 @@
         <label for="password" class="placeholder">Password</label>
       </div>
       <button type="text" class="submit" @click="login()">Login</button>
-      <button type="text" class="submit" @click="proba()">Proba</button>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 export default {
   name: "Login",
   data() {
@@ -40,30 +42,16 @@ export default {
         email: "",
         password: "",
       },
+      errorMessage: "",
     };
   },
   methods: {
     async login() {
       var email = this.form.email;
       var password = this.form.password;
-
-           var headers = new Headers();
-
-  headers.append('Content-Type', 'application/json');
-  headers.append('Accept', 'application/json');
-
-  headers.append('Access-Control-Allow-Origin', 'http://localhost:8000');
-  headers.append('Access-Control-Allow-Credentials', 'true');
-
-  headers.append('GET', 'POST', 'OPTIONS');
-
-  console.log("HEADERS ", headers)
-
       await fetch("http://127.0.0.1:8000/api/login", {
         method: "POST",
-        // headers: { "Content-Type": "application/json", "Accept": "application/json", "Access-Control-Allow-Origin": "http://localhost:8000", "Access-Control-Allow-Credentials": "true" },
-        // headers: headers,
-        headers: { "Content-Type" : "application/json" },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
           email,
@@ -71,6 +59,11 @@ export default {
         }),
       }).then((response) => {
         console.log(response);
+        if(response.status == 200) {
+          this.$router.replace("/leads");
+        } else {
+          this.errorMessage = "Wrong credentials!"
+        }
         // axios
         //   .get("api/user", { withCredentials: true })
         //   .then(function (response) {
@@ -87,47 +80,17 @@ export default {
         //       setErrorMessage("Error occured while signing in!");
         //     }
         //   });
+      }).catch(error => {
+        console.log(error);
+        this.errorMessage = error;
       });
     },
 
-    proba() {
-      // axios({
-      //   method: "post",
-      //   url: "api/registerr",
-      // }).then((response) => {
-      //   console.log("Registerr response");
-      //   console.log(response);
-      //   console.log(response.data);
-      // });
-
-      axios({
-        method: "post",
-        url: "api/login",
-        credentials: "include",
-        data: {
-          email: this.form.email,
-          password: this.form.password
-        }
-      }).then((response) => {
-        console.log(response);
-        console.log(response.data);
-      });
-    },
   },
 };
 </script>
 
 <style>
-/* .login {
-  background-color: rgb(245, 245, 245);
-  border-radius: 6px;
-  width: 80%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: auto;
-  margin-bottom: auto;
-} */
 
 .login {
   width: 100%;
@@ -251,5 +214,17 @@ export default {
 
 .submit:active {
   background-color: #06b;
+}
+
+.alert-danger {
+  padding: 15px;
+  /* margin: 5px; */
+  margin-bottom: 5px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  display: inline-block;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  color: #a94442;
 }
 </style>

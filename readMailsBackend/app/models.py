@@ -36,19 +36,20 @@ class PRIORITY(ChoiceEnum):
 
 
 class Lead(models.Model):
-    name = models.CharField(max_length=255)
-    surname = models.CharField(max_length=255)
-    email = models.EmailField(max_length=254, unique=True)
-    phone_number = models.CharField(max_length=255)
-    time_created = models.DateTimeField()
-    last_changed = models.DateTimeField()
-    car_year = models.CharField(max_length=255)
-    car_model = models.CharField(max_length=255)
-    car_type = models.CharField(max_length=255)
-    car_condition = models.CharField(max_length=255)
+    name = models.CharField(max_length=255) #
+    surname = models.CharField(max_length=255) #
+    email = models.EmailField(max_length=254, unique=True) #
+    phone_number = models.CharField(max_length=255) #
+    time_created = models.DateTimeField() #
+    last_changed = models.DateTimeField() #
+    car_year = models.CharField(max_length=255) #
+    car_model = models.CharField(max_length=255) #
+    #make
+    car_type = models.CharField(max_length=255) #
+    car_condition = models.CharField(max_length=255) #
     carrier_type = models.CharField(max_length=255)
-    pickup_city = models.CharField(max_length=255)
-    pickup_zip = models.CharField(max_length=255)
+    pickup_city = models.CharField(max_length=255) #
+    pickup_zip = models.CharField(max_length=255) #
     delivery_city = models.CharField(max_length=255)
     delivery_zip = models.CharField(max_length=255)
     move_date = models.DateTimeField()

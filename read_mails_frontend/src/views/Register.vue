@@ -1,7 +1,10 @@
 <template>
   <div class="register">
     <div class="registerForm">
-      <div class="registerTitle">Welcome!</div>
+        <div v-if="errorMessage != ''" class="alert-danger">
+      <div show class="d-flex justify-content-center">{{errorMessage}}</div>
+    </div>
+      <div v-if="errorMessage == ''" class="registerTitle">Welcome!</div>
       <!-- <div class="subtitle">Let's create your account!</div> -->
       <div class="input-container ic1">
         <input
@@ -90,6 +93,7 @@ export default {
         password: "",
         confirmPassword: "",
       },
+      errorMessage: ""
     };
   },
   methods: {
@@ -107,13 +111,17 @@ export default {
             password: this.form.password,
           },
         }).then((response) => {
-          console.log("Register response")  
-          console.log(response);
-          console.log(response.data);
+            if(response.status == 200) {
+                this.$router.replace("/login");
+            } else {
+              this.errorMessage = "Error occured while registering!"
+          }
+        }).catch(error => {
+            console.log(error);
+            this.errorMessage = "Error occured while registering!";
         });
       } else {
-        console.log("sifre se ne poklapaju!");
-        throw "Passwords not matching!";
+        this.errorMessage = "Passwords are not matching!"
       }
     },
   },
