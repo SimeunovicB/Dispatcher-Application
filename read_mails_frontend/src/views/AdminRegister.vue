@@ -5,7 +5,6 @@
       <div show class="d-flex justify-content-center">{{errorMessage}}</div>
     </div>
       <div v-if="errorMessage == ''" class="registerTitle">Welcome!</div>
-      <!-- <div class="subtitle">Let's create your account!</div> -->
       <div class="input-container ic1">
         <input
           id="firstname"
@@ -113,7 +112,7 @@ export default {
           },
         }).then((response) => {
             if(response.status == 200) {
-                this.$router.replace("/login");
+                this.$router.replace("/");
             } else {
               this.errorMessage = "Error occured while registering!"
           }
@@ -246,7 +245,7 @@ export default {
 
 .submit {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  background-color: #11bfeb;
+  background-color: #297b99;
   /* border-radius: 12px; */
   border: 0;
   box-sizing: border-box;

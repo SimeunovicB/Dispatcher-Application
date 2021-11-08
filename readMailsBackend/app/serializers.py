@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from .models import User, Lead, Message
+from .models import User, Lead, Message, Note
 
 
 class MessageSerializer(ModelSerializer):
@@ -12,7 +12,18 @@ class MessageSerializer(ModelSerializer):
 class LeadSerializer(ModelSerializer):
     class Meta:
         model = Lead
+        # fields = '__all__'
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'time_created', 'last_changed', 'year1', 'make1', 'model1',
+                  'vehicle_type_id1', 'vehicle_runs', 'ship_via_id', 'pickup_city', 'pickup_state_code', 'pickup_zip', 'dropoff_city',
+                  'dropoff_state_code', 'dropoff_zip', 'estimated_ship_date', 'priority', 'active', 'notes_active', 'agent', 'note_set']
+        depth = 2
+
+
+class NoteSerializer(ModelSerializer):
+    class Meta:
+        model = Note
         fields = '__all__'
+        depth = 1
 
 
 class EnumField(serializers.ChoiceField):
@@ -34,7 +45,7 @@ class EnumField(serializers.ChoiceField):
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'firstName', 'lastName', 'phoneNumber', 'password', 'is_active']
+        fields = ['id', 'email', 'firstName', 'lastName', 'phoneNumber', 'password', 'is_active', 'is_superuser']
         extra_kwargs = {
             'password': {'write_only': True}
         }

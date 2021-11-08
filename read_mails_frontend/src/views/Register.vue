@@ -98,32 +98,33 @@ export default {
   },
   methods: {
     register() {
-      console.log("registracija");
+      const { firstName, lastName, email, phoneNumber, password} = this.form;
       if (this.form.password === this.form.confirmPassword) {
         axios({
           method: "post",
           url: "api/register",
           data: {
-            firstName: this.form.firstName,
-            lastName: this.form.lastName,
-            email: this.form.email,
-            phoneNumber: this.form.phoneNumber,
-            password: this.form.password,
+            firstName,
+            lastName,
+            email,
+            phoneNumber,
+            password,
             is_active: false
           },
         }).then((response) => {
-            if(response.status == 200) {
-                this.$router.replace("/login");
-            } else {
+            if(response.status === 200) {
+                this.$router.replace("/");
+                return;
+            } 
               this.errorMessage = "Error occured while registering!"
-          }
         }).catch(error => {
             console.log(error);
             this.errorMessage = "Error occured while registering!";
         });
-      } else {
-        this.errorMessage = "Passwords are not matching!"
-      }
+        return;
+      } 
+    this.errorMessage = "Passwords are not matching!"
+      
     },
   },
 };
@@ -154,6 +155,7 @@ export default {
   height: 630px;
   padding: 20px;
   width: 380px;
+  border-radius: 30px;
 }
 
 .registerTitle {
@@ -246,7 +248,7 @@ export default {
 
 .submit {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  background-color: #11bfeb;
+  background-color: #297b99;
   /* border-radius: 12px; */
   border: 0;
   box-sizing: border-box;

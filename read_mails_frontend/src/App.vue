@@ -1,91 +1,185 @@
 <template>
   <div id="app">
-
-    <!-- <Navigation /> -->
-    <!-- <div class="card">
-      <Pagination/>
-      <LeadsTypeAndSearch/>
-      <date-and-priority/>
-      <leads/>
-    </div> -->
-
     <div class="topnav">
-      <router-link to="#calculator" v-bind:style="{'background-color': navigation == 'CALCULATOR' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'CALCULATOR'">Calculator</router-link>
-      <router-link to="#bookings" v-bind:style="{'background-color': navigation == 'BOOKINGS' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'BOOKINGS'">Bookings</router-link>
-      <router-link to="/leads" v-bind:style="{'background-color': navigation == 'LEADS' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'LEADS'">Leads</router-link>
-      <router-link to="#edit" v-bind:style="{'background-color': navigation == 'EDIT' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'EDIT'">Edit</router-link>
-      <router-link v-if="loggedIn" to="" v-bind:style="{'background-color': navigation == 'LOGOUT' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="logout()">Logout</router-link>
-      <router-link v-if="!loggedIn" to="/login" v-bind:style="{'background-color': navigation == 'LOGIN' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'LOGIN'">Login</router-link>
-      <router-link  v-if="!loggedIn" to="/register" v-bind:style="{'background-color': navigation == 'REGISTER' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'REGISTER'">Register</router-link>
-      <router-link  to="/users" v-bind:style="{'background-color': navigation == 'USERS' ? '#11bfeb' : 'rgb(8, 8, 41)'}" @click="navigation = 'USERS'">Users</router-link>
+      <router-link
+        to="#calculator"
+        v-bind:style="{
+          'background-color':
+            navigation == 'CALCULATOR' ? '#297b99' : 'rgb(8, 8, 41)',
+        }"
+        @click="navigation = 'CALCULATOR'"
+        >Calculator</router-link
+      >
+      <router-link
+        to="#bookings"
+        v-bind:style="{
+          'background-color':
+            navigation == 'BOOKINGS' ? '#297b99' : 'rgb(8, 8, 41)',
+        }"
+        @click="navigation = 'BOOKINGS'"
+        >Bookings</router-link
+      >
+      <router-link
+        v-if="loggedIn"
+        to="/leads"
+        v-bind:style="{
+          'background-color':
+            navigation == 'LEADS' ? '#297b99' : 'rgb(8, 8, 41)',
+        }"
+        @click="navigation = 'LEADS'"
+        >Leads</router-link
+      >
+      <router-link
+        to="#edit"
+        v-bind:style="{
+          'background-color':
+            navigation == 'EDIT' ? '#297b99' : 'rgb(8, 8, 41)',
+        }"
+        @click="navigation = 'EDIT'"
+        >Edit</router-link
+      >
+      <router-link
+        v-if="loggedIn"
+        to=""
+        v-bind:style="{
+          'background-color':
+            navigation == 'LOGOUT' ? '#297b99' : 'rgb(8, 8, 41)',
+        }"
+        @click="logout()"
+        >Logout</router-link
+      >
+      <router-link
+        v-if="!loggedIn"
+        to="/"
+        v-bind:style="{
+          'background-color':
+            navigation == 'LOGIN' ? '#297b99' : 'rgb(8, 8, 41)',
+        }"
+        @click="navigation = 'LOGIN'"
+        >Login</router-link
+      >
+      <router-link
+        v-if="!loggedIn"
+        to="/register"
+        v-bind:style="{
+          'background-color':
+            navigation == 'REGISTER' ? '#297b99' : 'rgb(8, 8, 41)',
+        }"
+        @click="navigation = 'REGISTER'"
+        >Register</router-link
+      >
+      <router-link
+        v-if="isAdmin"
+        to="/users"
+        v-bind:style="{
+          'background-color':
+            navigation == 'USERS' ? '#297b99' : 'rgb(8, 8, 41)',
+        }"
+        @click="navigation = 'USERS'"
+        >Users</router-link
+      >
     </div>
 
     <div class="card">
-      <router-view/>
+      <router-view />
     </div>
   </div>
 </template>
 
 <script>
-// import DateAndPriority from './components/DateAndPriority.vue';
-// import Leads from './components/Leads.vue';
-// import LeadsTypeAndSearch from './components/LeadsTypeAndSearch.vue';
-// import Pagination from './components/Pagination.vue';
-// import Proba from './components/Proba.vue';
-// import Navigation from "./components/Navigation.vue";
-// import {computed} from 'vue';
 export default {
   name: "App",
   components: {}, //Navigation, } // Pagination, LeadsTypeAndSearch, DateAndPriority, Leads },
   data() {
     return {
-      navigation: "LOGIN",
-      // auth: computed(this.$store.state.authenticated)
-      auth: false
-      
-    }
+      navigation: "",
+      auth: false,
+    };
   },
   computed: {
     loggedIn() {
-        return this.$store.state.authenticated;
-      },
+      return this.$store.state.authenticated;
+    },
+    isAdmin() {
+      return this.$store.state.administrator;
+    },
   },
-  mounted() {
-    console.log("ae")
-    // this.auth = this.$store.state.authenticated;
+  async mounted() {
+    await fetch("http://127.0.0.1:8000/api/read/mail", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/user", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      // response.json().then(result => console.log(result))
+
+      const content = await response.json();
+      console.log(content);
+      if (response.status == 200) {
+        this.$store.dispatch("setAuth", true);
+        if (content.is_superuser) {
+          this.$store.dispatch("setAdmin", true);
+        } else {
+          this.$store.dispatch("setAdmin", false);
+        }
+      } else {
+        this.$store.dispatch("setAuth", false);
+        this.$store.dispatch("setAdmin", false);
+      }
+    } catch (e) {
+      await this.$store.dispatch("setAuth", false);
+      await this.$store.dispatch("setAdmin", false);
+    }
+
+    // setInterval(function(){ alert("Hello"); }, 3000);
+
+    // var that = this;
+    // setInterval(async function () {
+    //   const response = await fetch("http://127.0.0.1:8000/api/leads", {
+    //     method: "GET",
+    //     headers: { "Content-Type": "application/json" },
+    //     credentials: "include",
+    //   });
+    //   console.log("poziv")
+    //   const leads = await response.json();
+    //   console.log(leads)
+    //   // const le = [1,2,3,4]
+    //   const le = "aj"
+    //   that.$store.dispatch("setLeads", leads);
+    // }, 3000);
   },
   methods: {
-  //   async logout () {
-  //   console.log("IDE MO MO MO");
-  //   await fetch("http://127.0.0.1:8000/api/logout", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     credentials: "include",
-  //   });
-
-  // },
-
-  async logout() {
+    async logout() {
       await fetch("http://127.0.0.1:8000/api/logout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-      }).then((response) => {
-        console.log(response);
-        if(response.status == 200) {
-          this.$router.replace("/login");
-          this.$store.dispatch('setAuth', false);
-        }
-      }).catch(error => {
-        console.log(error);
-        this.errorMessage = error;
-      });
+      })
+        .then((response) => {
+          console.log(response);
+          if (response.status == 200) {
+            this.$router.replace("/");
+            this.$store.dispatch("setAuth", false);
+            this.$store.dispatch("setAdmin", false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          this.errorMessage = error;
+        });
     },
 
-  deliAuth() {
-    this.auth = this.$store.state.authenticated;
-  }
-  }
+    deliAuth() {
+      this.auth = this.$store.state.authenticated;
+    },
+  },
 };
 </script>
 
@@ -111,7 +205,6 @@ html {
   text-decoration: none;
   font-size: 16px;
   text-transform: uppercase;
-
 }
 
 .topnav router-link {
@@ -122,7 +215,6 @@ html {
   text-decoration: none;
   font-size: 16apx;
   text-transform: uppercase;
-
 }
 
 #app {
@@ -139,12 +231,8 @@ html {
   background-color: rgb(245, 245, 245);
   border-radius: 6px;
   width: 80%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); */
   margin-left: auto;
   margin-right: auto;
 }
-
-
-
-
 </style>

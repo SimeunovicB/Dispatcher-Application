@@ -4,7 +4,7 @@
       <button
         class="btn"
         v-bind:style="{
-          'background-color': activeBtn == 'TARGET LEADS' ? '#11bfeb' : 'white',
+          'background-color': activeBtn == 'TARGET LEADS' ? '#297b99' : 'white',
           'color': activeBtn == 'TARGET LEADS' ? 'white' : 'black',
         }"
         @click="buttonOne()"
@@ -14,7 +14,7 @@
       <button
         class="btn"
         v-bind:style="{
-          'background-color': activeBtn == 'ALL LEADS' ? '#11bfeb' : 'white',
+          'background-color': activeBtn == 'ALL LEADS' ? '#297b99' : 'white',
           'color': activeBtn == 'ALL LEADS' ? 'white' : 'black',
         }"
         @click="buttonTwo()"
@@ -24,7 +24,7 @@
       <button
         class="btn"
         v-bind:style="{
-          'background-color': activeBtn == 'MY LEADS' ? '#11bfeb' : 'white',
+          'background-color': activeBtn == 'MY LEADS' ? '#297b99' : 'white',
           'color': activeBtn == 'MY LEADS' ? 'white' : 'black',
         }"
         @click="buttonThree()"
@@ -34,7 +34,7 @@
       <button
         class="btn"
         v-bind:style="{
-          'background-color': activeBtn == 'SORT BY SHIPPING DATE' ? '#11bfeb' : 'white',
+          'background-color': activeBtn == 'SORT BY SHIPPING DATE' ? '#297b99' : 'white',
           'color': activeBtn == 'SORT BY SHIPPING DATE' ? 'white' : 'black',
         }"
         @click="buttonFour()"
@@ -44,7 +44,7 @@
       <button
         class="btn"
         v-bind:style="{
-          'background-color': activeBtn == 'UNCLAIMED' ? '#11bfeb' : 'white',
+          'background-color': activeBtn == 'UNCLAIMED' ? '#297b99' : 'white',
           'color': activeBtn == 'UNCLAIMED' ? 'white' : 'black',
         }"
         @click="buttonFive()"
@@ -102,6 +102,7 @@ export default {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   text-transform: uppercase;
   margin: 0px 5px;
+  border-radius: 20px;
 }
 
 .hover:hover {

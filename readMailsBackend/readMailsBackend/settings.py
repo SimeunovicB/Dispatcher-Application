@@ -110,7 +110,7 @@ WSGI_APPLICATION = 'readMailsBackend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test1',
+        'NAME': 'test2',
         'USER': 'postgres',
         'PASSWORD': '1111',
         'HOST': 'localhost'

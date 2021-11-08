@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from .models import User
 from .serializers import UserSerializer
 from .serializers import AdminSerializer
-from rest_framework import viewsets
+from .permissions import AdminPermission
 
 
 class RegisterView(APIView):
@@ -28,12 +28,6 @@ class RegisterAdminView(APIView):
         return Response(serializer.data)
 
 
-class RegisterrView(APIView):
-    def post(self, request):
-        print("idemo")
-        return Response("ide gas")
-
-
 class LoginView(APIView):
     def post(self, request):
         email = request.data['email']
@@ -49,7 +43,7 @@ class LoginView(APIView):
         print(user)
         payload = {
             'id': user.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=600),
             'iat': datetime.datetime.utcnow()
         }
         print("PAYLOAD")
@@ -80,13 +74,11 @@ class UserView(APIView):
         user = User.objects.filter(id=payload['id']).first()
         serializer = UserSerializer(user)
         print(user)
-        # return Response("idemo", content_type="application/json")
         return Response(serializer.data)
 
 
 class LogoutView(APIView):
     def post(self, request):
-        print("idemo")
         response = Response()
         response.set_cookie(key='jwt', httponly=True, secure=True, samesite='None')
         response.delete_cookie('jwt')
@@ -111,6 +103,9 @@ class UsersViewSet(APIView):
 
 class ChangeUserActivityView(APIView):
     def put(self, request):
+        if not AdminPermission.has_permission(self, request):
+            return Response({"detail": "You don't have admin permissions."}, status=403)
+
         data = json.loads(request.body.decode("utf-8"))
         email = data['email']
         print(email)
@@ -118,19 +113,19 @@ class ChangeUserActivityView(APIView):
         user.is_active = not user.is_active
         user.save()
 
-
-        #TODO NAPRAVI PERMISIJE I ONDA VIDI SIGNALE
-        token = request.COOKIES.get('jwt')
-        print("TOKEN ", token);
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
-        user = User.objects.filter(id=payload['id']).first()
-        print("USER OD TOKENA JE ", user)
-
+        # token = request.COOKIES.get('jwt')
+        # print("TOKEN ", token);
+        # if not token:
+        #     raise AuthenticationFailed('Unauthenticated!')
+        # try:
+        #     payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        # except jwt.ExpiredSignatureError:
+        #     raise AuthenticationFailed('Unauthenticated!')
+        # user = User.objects.filter(id=payload['id']).first()
+        # print("USER OD TOKENA JE ", user)
+        #
+        # if not AdminPermission.has_permission(self, user):
+        #     return Response({"detail": "You don't have admin permissions."}, status=401)
 
         response = Response("successfuly changed user activity", content_type="application/json")
         return response

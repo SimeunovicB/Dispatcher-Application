@@ -17,7 +17,7 @@ export default {
 
 .paginationBtn {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  background-color: #11bfeb;
+  background-color: #297b99;
   border: none;
   color: white;
   padding: 12px 16px;
@@ -27,6 +27,7 @@ export default {
   font-size: 14px;
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
   text-transform: uppercase;
+  border-radius: 20px;
 }
 
 /* .pagination {

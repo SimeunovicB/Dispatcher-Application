@@ -50,23 +50,25 @@ export default {
   },
   methods: {
     async changeUserActivity(email) {
-        console.log(email);
-        // const idString = id.toString();
-        // console.log(idString)
+      console.log(email);
+      // const idString = id.toString();
+      // console.log(idString)
       const response = await fetch("http://127.0.0.1:8000/api/user/activity", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          email
+          email,
         }),
-      })
+      });
       let content = await response.json();
-      console.log(content)
-      for(let i in this.users) {
-          if(this.users[i].email == email) {
-              this.users[i].is_active = !this.users[i].is_active;
+      console.log("content ", content);
+      if (response.status == 200) {
+        for (let i in this.users) {
+          if (this.users[i].email == email) {
+            this.users[i].is_active = !this.users[i].is_active;
           }
+        }
       }
     },
   },
@@ -85,11 +87,14 @@ export default {
   width: 60%;
   height: 100%;
   display: flex;
+  padding-bottom: 25px;
   margin: 30px;
   flex-direction: column;
   align-items: center;
   color: white;
   background-color: rgb(8, 8, 41);
+  border-radius: 30px;
+
 }
 
 /* .usersList { */
@@ -150,6 +155,7 @@ export default {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   text-transform: uppercase;
   width: 100%;
+  border-radius: 20px;
 }
 
 .deactBtn {
@@ -165,6 +171,7 @@ export default {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   text-transform: uppercase;
   width: 100%;
+  border-radius: 20px;
 }
 
 .input {

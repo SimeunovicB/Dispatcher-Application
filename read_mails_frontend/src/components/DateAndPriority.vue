@@ -14,19 +14,23 @@
             <span class="tooltiptext">No priority</span>
           </div>
           <div class="tooltip">
-            <button class="priority priorityThree" @click='priorityFilter = "Future lead"'></button>
-            <span class="tooltiptext">Future lead</span>
-          </div>
-          <div class="tooltip">
-            <button class="priority priorityFour" @click='priorityFilter = "Hot lead"'></button>
-            <span class="tooltiptext">Hot lead</span>
-          </div>
-          <div class="tooltip">
-            <button class="priority priorityFive" @click='priorityFilter = "Bad lead"'></button>
+            <button class="priority priorityThree" @click='priorityFilter = "Bad lead"'></button>
             <span class="tooltiptext">Bad lead</span>
           </div>
           <div class="tooltip">
-            <button class="priority prioritySix" @click='priorityFilter = "Booked lead"'></button>
+            <button class="priority priorityFour" @click='priorityFilter = "Future lead"'></button>
+            <span class="tooltiptext">Future lead</span>
+          </div>
+          <div class="tooltip">
+            <button class="priority priorityFive" @click='priorityFilter = "Hot lead"'></button>
+            <span class="tooltiptext">Hot lead</span>
+          </div>
+          <div class="tooltip">
+            <button class="priority prioritySix" @click='priorityFilter = "Potential lead"'></button>
+            <span class="tooltiptext">Potential lead</span>
+          </div>
+          <div class="tooltip">
+            <button class="priority prioritySeven" @click='priorityFilter = "Booked lead"'></button>
             <span class="tooltiptext">Booked lead</span>
           </div>
         </div>
@@ -87,6 +91,7 @@ export default {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   text-transform: uppercase;
   margin: 0px 5px;
+  border-radius: 20px;
 }
 
 .btn:hover {
@@ -110,18 +115,23 @@ export default {
 }
 
 .priorityThree {
-  background-color: rgb(250, 229, 111);
+  background-color: rgb(240, 172, 183);
+
 }
 
 .priorityFour {
-  background-color: rgb(142, 233, 142);
+  background-color: rgb(250, 229, 111);
 }
 
 .priorityFive {
-  background-color: rgb(240, 172, 183);
+  background-color: rgb(142, 233, 142);
 }
 
 .prioritySix {
+  background-color: rgb(255, 202, 104);
+}
+
+.prioritySeven {
   background-color: rgb(105, 214, 233);
 }
 
@@ -139,6 +149,8 @@ export default {
   /* border-radius: 10px; */
   margin: 6px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 5px;
+
 }
 
 .datedate {
@@ -170,4 +182,6 @@ export default {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+
 </style>

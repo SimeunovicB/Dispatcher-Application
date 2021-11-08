@@ -1,10 +1,9 @@
 <template>
   <div class="login">
-    
     <div class="loginForm">
       <div v-if="errorMessage != ''" class="alert-danger">
-      <div show class="d-flex justify-content-center">{{errorMessage}}</div>
-    </div>
+        <div show class="d-flex justify-content-center">{{ errorMessage }}</div>
+      </div>
       <div v-if="errorMessage == ''" class="loginTitle">Login</div>
       <div class="input-container ic1">
         <input
@@ -34,8 +33,7 @@
 </template>
 
 <script>
-
-import axios from 'axios';
+import axios from "axios";
 export default {
   name: "Login",
   data() {
@@ -51,26 +49,31 @@ export default {
     async login() {
       var email = this.form.email;
       var password = this.form.password;
-      await fetch("http://127.0.0.1:8000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      }).then((response) => {
-        console.log(response);
-        if(response.status == 200) {
-          this.$router.replace("/leads");
-        }
-         else {
-          this.errorMessage = "Wrong credentials!"
-        }
-      }).catch(error => {
-        console.log(error);
-        this.errorMessage = error;
-      });
+      try {
+        await fetch("http://127.0.0.1:8000/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }).then((response) => {
+            if (response.status === 200) {
+              this.$store.dispatch("setAuth", true);
+              this.$router.replace("/leads");
+              return;
+            } 
+            this.$store.dispatch("setAuth", false);
+            this.errorMessage = "Wrong credentials!";
+          })
+          .catch((error) => {
+            console.log(error);
+            this.errorMessage = error;
+          });
+      } catch (e) {
+        await this.$store.dispatch("setAuth", false);
+      }
     },
 
     async test() {
@@ -89,17 +92,16 @@ export default {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
-        url: 'api/test'
-      }).then(response =>{
-        console.log(response.data)
-      })
-    }
+        url: "api/test",
+      }).then((response) => {
+        console.log(response.data);
+      });
+    },
   },
 };
 </script>
 
 <style>
-
 .login {
   width: 100%;
   display: flex;
@@ -115,6 +117,7 @@ export default {
   height: 330px;
   padding: 20px;
   width: 380px;
+  border-radius: 30px;
 }
 
 .loginTitle {
@@ -207,7 +210,7 @@ export default {
 
 .submit {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  background-color: #11bfeb;
+  background-color: #297b99;
   /* border-radius: 12px; */
   border: 0;
   box-sizing: border-box;
@@ -218,6 +221,7 @@ export default {
   margin-top: 30px;
   text-align: center;
   width: 100%;
+  border-radius: 20px;
 }
 
 .submit:active {

@@ -12,6 +12,12 @@ import pathlib
 from socket import gaierror
 from .models import Message
 from .serializers import MessageSerializer
+from .serializers import LeadSerializer
+from .models import Lead
+import json
+from rest_framework import viewsets
+from .models import Note
+from .serializers import NoteSerializer
 
 
 # TODO ATTACHMENT
@@ -71,10 +77,10 @@ def sort_by_date(message):
 def get_inbox():
     print("Read mail {}".format(datetime.datetime.now()))
     host = 'imap.gmail.com'
-    username = 'info@flixautotransport.com'
-    password = '4*qMN3uN!!5Ny(@'
-    # username = 'isaija97@gmail.com'
-    # password = 'isaisa123'
+    # username = 'info@flixautotransport.com'
+    # password = '4*qMN3uN!!5Ny(@'
+    username = 'isaija97@gmail.com'
+    password = 'isaisa123'
 
     try:
         mail = imaplib.IMAP4_SSL(host)
@@ -100,9 +106,6 @@ def get_inbox():
         for header in ['subject', 'to', 'from', 'date']:
             if header != 'date':
                 is_utf = decode_header(email_message['subject'])[0][1]
-                print("IDE GAS ", is_utf)
-                print("IDE DRUGI GAS ", decode_header(email_message[header])[0][0])
-                print("IDE DRUGI GAS TIP ", type(decode_header(email_message[header])[0][0]))
 
                 if is_utf:
                     print("IS UTF")
@@ -124,23 +127,6 @@ def get_inbox():
                 print("ZADNJI DATUM ", email_message[header])
                 # email_data[header] = ajust_time_zone(email_message[header])
 
-            #     date = email_message[header].split()
-            #     month = switcher.get(date[2], "Invalid month")
-            #     email_data['date'] = date[1] + "." + str(month) + "." + date[3] + ". " + date[4] + " " + date[5]
-            #     print("DATEE ", email_data['date']) #-0700,
-            #     broj = int(date[5])
-            #     print("BROJ ", broj)
-            #     print("TIP BROJA ", type(broj))
-            #     broj = broj / 100
-            #     print("DOBAR BROJ ", int(broj))
-            #     time_splited = date[4].split(":")
-            #     print("SATI ", time_splited[0])
-            #     hours = int(time_splited[0]) + broj
-            #     hours = str(hours)
-            #     time = hours + ":" + time_splited[1] + ":" + time_splited[2]
-            #     email_data['date'] = date[1] + "." + str(month) + "." + date[3] + time
-            #     print("VREME ", email_data["date"])
-
             print("{}: {}".format(header, email_message[header]))
 
         for part in email_message.walk():
@@ -150,58 +136,67 @@ def get_inbox():
                 print("BODY ", body.decode(errors='ignore'))  # errors='ignore'
                 email_data['body'] = body.decode(errors='ignore')
 
-            elif part.get_content_type() == "text/html":
-                print("TYPE text/html")
-                html_body = part.get_payload(decode=True)
-                # print(html_body.decode())
-                email_data['html_body'] = html_body.decode(errors='ignore')
-                email_data['body'] = html2text.html2text(email_data['html_body'])
+            # elif part.get_content_type() == "text/html":
+            #     print("TYPE text/html")
+            #     html_body = part.get_payload(decode=True)
+            #     # print(html_body.decode())
+            #     email_data['html_body'] = html_body.decode(errors='ignore')
+            #     email_data['body'] = html2text.html2text(email_data['html_body'])
+            #
+            # if part.get_content_maintype() == 'multipart':
+            #     continue
+            # if part.get('Content-Disposition') is None:
+            #     continue
+            # if "image" in part.get_content_type() or "video" in part.get_content_type() or "audio" in part.get_content_type():
+            #     continue
+            # file_name = part.get_filename()
+            # if bool(file_name):
+            #     attachments_path = os.path.join(pathlib.Path().resolve(), "Attachments")
+            #     try:
+            #         os.mkdir(attachments_path)
+            #     except OSError as error:
+            #         print(error)
+            #
+            #     date_splited = email_data["date"].split()
+            #     directory = date_splited[1] + " " + date_splited[2] + " " + date_splited[3]
+            #     dir_path = os.path.join(attachments_path, directory)
+            #     try:
+            #         os.mkdir(dir_path)
+            #     except OSError as error:
+            #         print(error)
+            #     file_path = os.path.join(dir_path, file_name)
+            #     print("PATH ", pathlib.Path().resolve())
+            #     if not os.path.isfile(file_path):
+            #         fp = open(file_path, 'wb')
+            #         fp.write(part.get_payload(decode=True))
+            #         fp.close()
+            #     subject = str(email_message).split("Subject: ", 1)[1].split("\nTo:", 1)[0]
+            #     print('Downloaded "{file}" from email titled "{subject}".'.format(file=file_name,
+            #                                                                       subject=subject))
 
-            if part.get_content_maintype() == 'multipart':
-                continue
-            if part.get('Content-Disposition') is None:
-                continue
-            if "image" in part.get_content_type() or "video" in part.get_content_type() or "audio" in part.get_content_type():
-                continue
-            file_name = part.get_filename()
-            if bool(file_name):
-                attachments_path = os.path.join(pathlib.Path().resolve(), "Attachments")
-                try:
-                    os.mkdir(attachments_path)
-                except OSError as error:
-                    print(error)
-
-                date_splited = email_data["date"].split()
-                directory = date_splited[1] + " " + date_splited[2] + " " + date_splited[3]
-                dir_path = os.path.join(attachments_path, directory)
-                try:
-                    os.mkdir(dir_path)
-                except OSError as error:
-                    print(error)
-                file_path = os.path.join(dir_path, file_name)
-                print("PATH ", pathlib.Path().resolve())
-                if not os.path.isfile(file_path):
-                    fp = open(file_path, 'wb')
-                    fp.write(part.get_payload(decode=True))
-                    fp.close()
-                subject = str(email_message).split("Subject: ", 1)[1].split("\nTo:", 1)[0]
-                print('Downloaded "{file}" from email titled "{subject}".'.format(file=file_name,
-                                                                                  subject=subject))
-
-        # keys = email_data.keys()
-        # if 'body' in keys:
-        #     print("IMA BODY")
-        # else:
-        #     print("NEMA BODY")
-        #     email_data['body'] = html2text.html2text(email_data['html_body'])
         print("BODY ", email_data['body'])
         my_messages.append(email_data)
 
         print("ALL MESS")
         for mess in my_messages:
             print(mess)
-            Message.objects.create(subject=mess['subject'], receiver=mess['to'], sender=mess['from'], date=mess['date'],
-                                   body=mess['body'], html_body=mess['html_body'])
+            # Message.objects.create(subject=mess['subject'], receiver=mess['to'], sender=mess['from'], date=mess['date'],
+            #                        body=mess['body'])
+            # TODO LEAD
+            body = json.loads(mess['body'])
+            dateTime = datetime.datetime.now()
+            dateTimeString = dateTime.strftime("%b %d %Y %H:%M")
+            print("BODIS , First Name: {} , Last Name {}".format(body['first_name'], body['last_name']))
+            lead = Lead.objects.create(first_name=body['first_name'], last_name=body['last_name'], email=body['email'],
+                                       phone=body['phone'], time_created=dateTimeString, last_changed=dateTimeString,
+                                       year1=body['year1'], make1=body['make1'], model1=body['model1'],
+                                       vehicle_type_id1=body['vehicle_type_id1'], pickup_city=body['pickup_city'],
+                                       pickup_state_code=body['pickup_state_code'], pickup_zip=body['pickup_zip'],
+                                       dropoff_city=body['dropoff_city'], dropoff_state_code=body['dropoff_state_code'],
+                                       dropoff_zip=body['dropoff_zip'], estimated_ship_date=body['estimated_ship_date'],
+                                       vehicle_runs=body['vehicle_runs'], ship_via_id=body['ship_via_id'])
+            print("LEAD ", lead)
+
     return my_messages
 
 
@@ -234,7 +229,7 @@ class RepeatedTimer(object):
         return self.function()
 
 
-class ReadMailsView(APIView):
+class ReadMailsView(APIView):  # polling, celery, orm - serializer mapira na bazu
     def get(self, request, format=None, *args, **kwargs):
         print("starting...")
 
@@ -247,7 +242,7 @@ class ReadMailsView(APIView):
         print("FUNCTION ", rt.function)
         print("END ", rt)
 
-        response = Response("ide gas", content_type="application/json");
+        response = Response("reading emails", content_type="application/json");
         return response;
 
 
@@ -276,31 +271,39 @@ class AllMessagesView(APIView):
         return response;
 
 
+class LeadViewSet(viewsets.ModelViewSet):
+    # permission_classes = (HasPermission,)
+    # authentication_classes = (IsAuthenticated,)
+    # permission_classes = (AdminViewSetPermission,)
+    queryset = Lead.objects.all()
+    serializer_class = LeadSerializer
+
+
+class NoteViewSet(viewsets.ModelViewSet):
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from django.core.exceptions import PermissionDenied
 import jwt
 from .models import User
 from .serializers import UserSerializer
+from .permissions import AdminPermission
 
 
 class TestView(APIView):
     def get(self, request):
-        print("USER VIEW")
-        print(request.COOKIES)
-        token = request.COOKIES.get('jwt')
-        print("TOKEN ", token);
-        if not token:
-            raise PermissionDenied('Unauthenticated!')
-
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise PermissionDenied('Unauthenticated!')
-
-        user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
-        print(user)
-        print("Is superuser ", user.is_superuser)
-        # return Response("idemo", content_type="application/json")
-        return Response(serializer.data)
+        print("TEST VIEW")
+        leads = Lead.objects.all()
+        for lead in leads:
+            print(lead.id)
+            print(lead)
+            if lead.note_set is None:
+                print("none")
+            else:
+                print("nije none")
+                print("sta je ", type(lead.note_set))
+        response = Response("TESTIC", content_type="application/json")
+        return response

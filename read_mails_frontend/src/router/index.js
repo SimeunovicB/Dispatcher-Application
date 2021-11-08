@@ -1,17 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Leads from '../views/Leads.vue'
 import AdminRegister from '../views/AdminRegister.vue'
 import Users from '../views/Users.vue'
+import Notes from '../components/Notes.vue'
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
   {
     path: '/about',
     name: 'About',
@@ -21,7 +16,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: '/login',
+    path: '/',
     name: 'Login',
     component: Login
   },
@@ -44,6 +39,11 @@ const routes = [
     path: '/users',
     name: 'Users',
     component: Users
+  },
+  {
+    path: '/notes',
+    name: 'Notes',
+    component: Notes
   }
 ]
 
